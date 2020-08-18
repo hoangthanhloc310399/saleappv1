@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý sản phẩm</title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" />
+    <script>
+        function delete_product(prodtid) {
+            var c = confirm("Bạn chắc muốn xóa không?");
+            if (c == true) {
+                fetch("/api/products/" + prodtid, {
+                    method: "delete"
+                }).then(function(res) {
+                    return res.json();
+                 }).then(function(data) {
+                    console.info(data);
+                    var prodid = data.data.product_id;
+                    var p = document.getElementById("product" + prodid);
+                    p.style.display = "none";
+
+                 }).catch(function(err) {
+                    console.error(err);
+                 });
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center">QUẢN LÝ SẢN PHẨN</h1>
+        <form>
+            <div class="form-group">
+                <label>Tìm theo tên</label>
+                <input type="text" name="keyword" class="form-control" placeholder="nhập từ khóa" />
+            </div>
+            <div class="form-group">
+                <label>Tìm theo giá</label>
+                <div class="row">
+                  <div class="col">
+                      <input type="number" name="from_price" class="form-control" placeholder="nhập giá bắt đầu" />
+                  </div>
+                  <div class="col">
+                      <input type="number" name="to_price" class="form-control" placeholder="nhập giá kết thúc" />
+                  </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="submit" class="btn btn-danger" value="Tìm" />
+            </div>
+        </form>
+        <h1 class="text-center"><a href="{{ url_for('add_or_update_pro') }}">Thêm sản phẩm</a></h1>
+<!--        <h1 class="text-center"> <a href="{{ url_for('export_product') }}">truy xuat san pham</a></h1>-->
+        <table class="table" border="1">
+            {% for p in products %}
+            <tr id="product{{p.id}}">
+                <td>
+                    <img width="120" src="{{ p.images }}" alt="{{ p.name }}" />
+                </td>
+                <td>
+                    <h1>{{ p.name }}</h1>
+                </td>
+                <td>
+                    <p>{{ p.description }}</p>
+                </td>
+                <td>
+                    <p>{{ "{:,.2f}".format(p.price) }} VNĐ</p>
+                </td>
+                <td>{{ p.category_id }}</td>
+                <td>
+                    <a href="{{ url_for('add_or_update_pro', product_id = p.id) }}">Cập nhật</a> |
+                    <a href="javascript:;" onclick="delete_product({{p.id}})">Xóa</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Thêm Sản Phẩm</title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" />
+</head>
+<body>
+    <h1 class="text-center text-success">
+        {% if request.args.get('product_id') %} Cập nhật {% else %} Thêm {% endif%} sản phẩm
+    </h1>
+    <div class="container">
+        <form method="post">
+            <div class="form-group">
+                <label>Tên sản phẩm</label>
+                <input type="text" name="name" value="{{ product.name }}" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label>Giá sản phẩm</label>
+                <input type="text" name="price" value="{{ product.price }}" class="form-control" />
+            </div>
+             <div class="form-group">
+                <label>Ảnh sản phẩm</label>
+                <input type="text" value="{{ product.images }}" name="images" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label>Mô tả sản phẩm</label>
+                <textarea class="form-control" name="description">{{ product.description }}</textarea>
+            </div>
+            <div class="form-group">
+                <label>Danh mục</label>
+                <select class="form-control" name="category_id">
+                    {% for cat in categories %}
+                    <option value="{{cat.id}}" {% if cat.id==product.category_id %}selected{% endif %}>{{cat.name}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="{% if request.args.get('product_id') %} Cập nhật {% else %} Thêm {% endif%} sản phẩm" class="btn btn-danger" />
+            </div>
+        </form>
+    </div>
+</body>
+</html>
